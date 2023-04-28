@@ -1,18 +1,27 @@
 import 'dart:io';
+import 'dart:ui';
+import 'dart:core';
+import 'package:flutter/services.dart';
+import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:anemia_project_app/components/BottomNavBar.dart';
 import 'package:anemia_project_app/components/Accuracy_card.dart';
 import 'package:anemia_project_app/components/upload_img_btn.dart';
 import 'package:anemia_project_app/components/CheckResults.dart';
-import 'package:anemia_project_app/components/ImageListTile.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:anemia_project_app/tf/classifier.dart';
+import 'package:anemia_project_app/tf/classifier_float.dart';
+import 'package:logger/logger.dart';
+import 'package:tflite_flutter_helper_plus/tflite_flutter_helper_plus.dart';
 import 'components/result.dart';
+import 'image_model.dart';
 
 final picker = ImagePicker();
 String? imagePath;
-File? _image;
+File? image;
 
 enum WidgetMarker { One, Two, Three }
+
 
 class Home extends StatefulWidget {
   static const String id = '/home';
@@ -25,7 +34,44 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   WidgetMarker selectedCard = WidgetMarker.One;
   bool _isButtonPressed = false;
+  late Classifier _classifier;
+  var logger = Logger();
+  late File _image;
+  // late List _results;
+  bool imageSelect=false;
 
+  Category? category;
+
+  @override
+  void initState() {
+    super.initState();
+    _classifier = ClassifierFloat();
+  }
+
+  // Future loadModel()
+  // async {
+  //   Tflite.close();
+  //   String res;
+  //   res=(await Tflite.loadModel(model: "assets/model.tflite",labels: "assets/labels.txt",useGpuDelegate: true))!;
+  //   print("Models loading status: $res");
+  // }
+  //
+  Future imageClassification(File image)
+  async {
+    setState(() {
+      _image=image;
+      imageSelect=true;
+      _predict();
+    });
+  }
+  void _predict() async {
+    img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
+    var pred = _classifier.predict(imageInput);
+
+    setState(() {
+      this.category = pred;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,9 +169,9 @@ class _HomeState extends State<Home> {
   Future<void> _openGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      _image = File(pickedFile.path);
-      if (_image != null) {
-        imagePath = _image?.path;
+      image = File(pickedFile.path);
+      if (image != null) {
+        imagePath = image?.path;
         print('Image picked: ${pickedFile.path}');
       } else {
         print('Failed to create File object.');
@@ -150,7 +196,7 @@ class _HomeState extends State<Home> {
         );
       case WidgetMarker.Two:
         return _isButtonPressed && imagePath != null
-            ? ImageListTile(
+            ? Image_Model(
           caller: "Widget2",
           imagePath: imagePath!,
           text: "Find Result",
@@ -158,22 +204,23 @@ class _HomeState extends State<Home> {
           onPress: () {
             setState(() {
               selectedCard = WidgetMarker.Three;
+              imageClassification(image!);
             });
           },
         ) : Text("Please select an image from the gallery.");
-       case WidgetMarker.Three:
+      case WidgetMarker.Three:
         return summary(
           imagePath: imagePath,
-          // file: file,
           maxLines: 5,
           anemia: "detected",
           onPress: () {},
-          t1: "Igigs sudjds",
+          t1: "${category?.score.toStringAsFixed(3)}",
           text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
         );
     }
     return getCustomCard();
   }
+
 
 }
