@@ -3,20 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:core';
 
-class ibCard extends StatefulWidget {
-  String accuracy;
+class accuracyCard extends StatefulWidget {
+  double? accuracy;
 
-  ibCard({required this.accuracy, Key? key}) : super(key: key);
+  accuracyCard({required this.accuracy, Key? key}) : super(key: key);
 
   @override
-  State<ibCard> createState() => _ibCardState();
+  State<accuracyCard> createState() => _accuracyCardState();
 }
 
-class _ibCardState extends State<ibCard> {
+class _accuracyCardState extends State<accuracyCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 350,
       width: 7 * MediaQuery.of(context).size.width / 8,
       margin: const EdgeInsets.only(left: 22, right: 22,top: 15, bottom: 20),
       child: Card(
@@ -61,7 +60,7 @@ class _ibCardState extends State<ibCard> {
                   Container(
                     margin: EdgeInsets.only(left: 40, top: 25),
                     child: Text(
-                      '--',
+                      widget.accuracy!=null?'${widget.accuracy} %':'',
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           fontSize: 22,

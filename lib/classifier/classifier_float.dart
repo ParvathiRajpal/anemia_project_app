@@ -1,4 +1,4 @@
-import 'package:anemia_project_app/tf/classifier.dart';
+import 'package:anemia_project_app/classifier/classifier.dart';
 import 'package:tflite_flutter_helper_plus/tflite_flutter_helper_plus.dart';
 
 class ClassifierFloat extends Classifier {

@@ -9,10 +9,12 @@ import 'package:anemia_project_app/components/Accuracy_card.dart';
 import 'package:anemia_project_app/components/upload_img_btn.dart';
 import 'package:anemia_project_app/components/CheckResults.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:anemia_project_app/tf/classifier.dart';
-import 'package:anemia_project_app/tf/classifier_float.dart';
+import 'package:anemia_project_app/classifier/classifier_holder.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite_flutter_helper_plus/tflite_flutter_helper_plus.dart';
+import 'classifier/accuracy.dart';
+import 'classifier/classifier.dart';
 import 'components/result.dart';
 import 'image_model.dart';
 
@@ -34,43 +36,48 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   WidgetMarker selectedCard = WidgetMarker.One;
   bool _isButtonPressed = false;
-  late Classifier _classifier;
+  double? accuracy;
   var logger = Logger();
   late File _image;
   // late List _results;
+  // late final double? accuracy;
   bool imageSelect=false;
 
   Category? category;
 
+   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  Classifier _classifier = ClassifierHolder.getClassifier();
+
   @override
-  void initState() {
+  void initState()  {
     super.initState();
-    _classifier = ClassifierFloat();
+    // _classifier = ClassifierFloat();
   }
 
-  // Future loadModel()
-  // async {
-  //   Tflite.close();
-  //   String res;
-  //   res=(await Tflite.loadModel(model: "assets/model.tflite",labels: "assets/labels.txt",useGpuDelegate: true))!;
-  //   print("Models loading status: $res");
-  // }
-  //
+
   Future imageClassification(File image)
   async {
+    // final SharedPreferences prefs = await _prefs;
     setState(() {
       _image=image;
       imageSelect=true;
       _predict();
+      // accuracy = prefs.getDouble('accuracy');
     });
   }
+
   void _predict() async {
     img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
-    var pred = _classifier.predict(imageInput);
+    var pred = await _classifier.predict(imageInput);
 
     setState(() {
-      this.category = pred as Category?;
+      category = pred as Category?;
     });
+
+
+    String imagePath = 'assets/images/${category?.label}/';
+    accuracy = await evaluate(_classifier,imagePath,"${category?.label}");
+    accuracy=(accuracy!*100)!;
   }
 
   @override
@@ -121,8 +128,8 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                   ),
-                  ibCard(
-                    accuracy: '--',
+                  accuracyCard(
+                    accuracy: accuracy,
                   ),
                   Expanded(
                     child: SingleChildScrollView(
@@ -212,7 +219,7 @@ class _HomeState extends State<Home> {
         return summary(
           imagePath: imagePath,
           maxLines: 5,
-          anemia: "detected",
+          anemia: category?.label=='ida'?"detected":"nil",
           onPress: () {},
           t1: "${category?.score.toStringAsFixed(3)}",
           text:

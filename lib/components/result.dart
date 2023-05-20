@@ -3,6 +3,7 @@ import 'package:anemia_project_app/components/prop_value_text.dart';
 import 'package:anemia_project_app/components/prop_value_widget.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
+import '../image_model.dart';
 import 'ImageListTile.dart';
 
 class summary extends StatefulWidget {
@@ -147,13 +148,13 @@ class _summaryState extends State<summary> {
                     ),
                   ),
                 ),
-                ImageListTile(
-                  imagePath: widget.imagePath!,
-                  caller: "Widget3",
-                  text: "Revaluate Result",
-                  c: 0xff45539F,
-                  onPress: widget.onPress,
-                )
+                Image_Model(
+                    imagePath: widget.imagePath!,
+                    caller: "Widget3",
+                    text: "Revaluate Result",
+                    c: 0xff45539F,
+                    onPress: widget.onPress,
+                  ),
               ],
             ),
           ),
