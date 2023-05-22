@@ -9,18 +9,11 @@ import 'ImageListTile.dart';
 class summary extends StatefulWidget {
   final String? imagePath;
   final VoidCallback onPress;
-  int maxLines;
-  String text;
-  String t1;
-  String anemia;
 
   summary(
       {required this.imagePath,
       required this.onPress,
-      required this.t1,
-      required this.anemia,
-      required this.text,
-      required this.maxLines});
+      });
 
   @override
   State<summary> createState() => _summaryState();
@@ -71,68 +64,26 @@ class _summaryState extends State<summary> {
           Container(
             margin: EdgeInsets.only(left: 22, top: 5,bottom: 10),
             child: Text(
-              "Result:",
+              "XAI Image:",
               textAlign: TextAlign.left,
               style: TextStyle(
                   fontSize: 22,
                   letterSpacing: 1,
                   fontWeight: FontWeight.normal,
-                  color: Color(0xff45539F),
+                  color: Colors.teal,
                   height: 1),
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 16),
+            margin: const EdgeInsets.only(top: 20),
             child: Column(
               children: [
-                Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          child: Image.file(
-                            file,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 25),
-                        width: 200,
-                        child: Text(
-                          widget.text,
-                          maxLines: widget.maxLines,
-                          overflow: TextOverflow.ellipsis,
-                          textDirection: TextDirection.ltr,
-                        ),
-                      ),
-                    ]),
                 Container(
-                  margin: const EdgeInsets.only(
-                      top: 50, bottom: 12, left: 24, right: 12),
-                  padding: EdgeInsets.only(right: 20),
-                  child: propValueWidget(
-                    widget1: const textProperty(
-                      t: 'Lorem Ipsum:',
-                      c: blue,
-                    ),
-                    widget2: textValue(
-                      t: widget.t1,
-                      c: black,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(
-                      top: 12, bottom: 12, left: 24, right: 12),
-                  padding: EdgeInsets.only(right: 20),
-                  child: propValueWidget(
-                    widget1: textProperty(t: 'Anemia: ', c: blue),
-                    widget2: textValue(t: widget.anemia, c: Colors.red),
+                  width: 200,
+                  height: 200,
+                  child: Image.file(
+                    file,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Container(

@@ -13,7 +13,6 @@ import 'package:anemia_project_app/classifier/classifier_holder.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite_flutter_helper_plus/tflite_flutter_helper_plus.dart';
-import 'classifier/accuracy.dart';
 import 'classifier/classifier.dart';
 import 'components/result.dart';
 import 'image_model.dart';
@@ -36,11 +35,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   WidgetMarker selectedCard = WidgetMarker.One;
   bool _isButtonPressed = false;
-  double? accuracy;
   var logger = Logger();
   late File _image;
-  // late List _results;
-  // late final double? accuracy;
+  bool _isLoaded = false;
   bool imageSelect=false;
 
   Category? category;
@@ -59,6 +56,7 @@ class _HomeState extends State<Home> {
   async {
     // final SharedPreferences prefs = await _prefs;
     setState(() {
+      _isLoaded = false;
       _image=image;
       imageSelect=true;
       _predict();
@@ -72,12 +70,9 @@ class _HomeState extends State<Home> {
 
     setState(() {
       category = pred as Category?;
+      _isLoaded = true;
     });
-
-
-    String imagePath = 'assets/images/${category?.label}/';
-    accuracy = await evaluate(_classifier,imagePath,"${category?.label}");
-    accuracy=(accuracy!*100)!;
+    print(category?.label);
   }
 
   @override
@@ -129,7 +124,9 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   accuracyCard(
-                    accuracy: accuracy,
+                    anemia: category?.label=='ida'?"detected":"nil",
+                    category: category?.label=='ida'?"${category?.label}":"normal",
+                    isLoaded:_isLoaded ,
                   ),
                   Expanded(
                     child: SingleChildScrollView(
@@ -218,12 +215,7 @@ class _HomeState extends State<Home> {
       case WidgetMarker.Three:
         return summary(
           imagePath: imagePath,
-          maxLines: 5,
-          anemia: category?.label=='ida'?"detected":"nil",
           onPress: () {},
-          t1: "${category?.score.toStringAsFixed(3)}",
-          text:
-          "${category?.label}",
         );
     }
   }

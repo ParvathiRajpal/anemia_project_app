@@ -130,6 +130,7 @@ abstract class Classifier {
 
     // final SharedPreferences prefs = await _prefs;
      // prefs.setDouble("accuracy", accuracy);
+    print(labeledProb);
      print(predictedClass);
       return Category(predictedClass, labeledProb);
 

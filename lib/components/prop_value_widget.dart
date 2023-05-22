@@ -8,10 +8,13 @@ class propValueWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         widget1,
-        widget2
+        Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: widget2,
+        )
       ],
     );
   }
