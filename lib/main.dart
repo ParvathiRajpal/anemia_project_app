@@ -7,6 +7,7 @@ import 'package:anemia_project_app/RegistrationScreen.dart';
 import 'package:anemia_project_app/Home.dart';
 import 'package:anemia_project_app/Login.dart';
 import 'package:anemia_project_app/Profile.dart';
+import 'package:provider/provider.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,14 +30,13 @@ class MyApp extends StatelessWidget {
         //   ),
         // ),
         debugShowCheckedModeBanner: false,
-
         initialRoute: SplashScreen.id,
         routes: {
           SplashScreen.id: (context) => SplashScreen(),
           OnboardingScreen.id: (context) => OnboardingScreen(),
           RegistrationScreen.id: (context) => RegistrationScreen(),
           LoginScreen.id: (context) => LoginScreen(),
-          NotificationScreen.id:(context) =>NotificationScreen(),
+          NotificationScreen.id: (context) => NotificationScreen(),
           Home.id: (context) => Home(),
           ProfileScreen.id: (context) => ProfileScreen(),
         });

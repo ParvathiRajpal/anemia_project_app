@@ -1,9 +1,8 @@
-import 'dart:typed_data';
 import 'package:image/image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite_flutter_plus/tflite_flutter_plus.dart';
 import 'package:tflite_flutter_helper_plus/tflite_flutter_helper_plus.dart';
-import 'accuracy.dart';
+
 
 
 abstract class Classifier {
@@ -129,14 +128,13 @@ abstract class Classifier {
        predictedClass = labels[0];
      }
 
-
-
-     // final SharedPreferences prefs = await _prefs;
+    // final SharedPreferences prefs = await _prefs;
      // prefs.setDouble("accuracy", accuracy);
-
+     print(predictedClass);
       return Category(predictedClass, labeledProb);
 
   }
+
 
   int getElementSizeInBytes(TfLiteType type) {
     switch (type) {
