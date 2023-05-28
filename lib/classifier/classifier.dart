@@ -1,4 +1,5 @@
 import 'package:image/image.dart';
+import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite_flutter_plus/tflite_flutter_plus.dart';
 import 'package:tflite_flutter_helper_plus/tflite_flutter_helper_plus.dart';
@@ -110,29 +111,15 @@ abstract class Classifier {
     final run = DateTime.now().millisecondsSinceEpoch - runs;
 
     print('Time to run inference: $run ms');
-    // List<dynamic> outputList = [0.2, 0.8];
-    // List<double> outputDoubleList = outputList.map<double>((e) => e.toDouble()).toList();
-    // Float32List outputFloatList = Float32List.fromList(outputDoubleList);
 
-       _outputBuffer = TensorBuffer.createFixedSize([1, 2], TfLiteType.float32);
-     double labeledProb = TensorLabel.fromList(
-         labels, _probabilityProcessor.process(_outputBuffer))
-         .getMapWithFloatValue()
-         .values
-         .first;
-    // != null
-     if(labeledProb>0){
-       predictedClass = labels[1];
-     }
-     else {
-       predictedClass = labels[0];
-     }
+    final outputValues = _outputBuffer.getDoubleList();
+    final prediction = outputValues[0]; // Get the single prediction value
 
-    // final SharedPreferences prefs = await _prefs;
-     // prefs.setDouble("accuracy", accuracy);
-    print(labeledProb);
-     print(predictedClass);
-      return Category(predictedClass, labeledProb);
+    print('Prediction: $prediction');
+    if(prediction > 0.5)
+      return Category(labels[1], prediction); // Return the predicted class and its probability
+    else
+      return Category(labels[0], prediction); // Return the predicted class and its probability
 
   }
 
