@@ -77,6 +77,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/model.tflite
+    - assets/dense_model.tflite
     - assets/my_model.tflite
     - assets/labels.txt
     - assets/images/logo1.png
